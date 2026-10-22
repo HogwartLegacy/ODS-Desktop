@@ -1,0 +1,85 @@
+﻿name: Windows desktop
+
+# Unit tests (including parity with ODS's scripts/select-model.py on the
+# vendored golden fixtures), the self-contained build and installer, then an
+# install-to-uninstall run on a clean Windows VM.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2025
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+
+      - name: Require the .NET 10 SDK
+        run: |
+          $version = dotnet --version
+          if ($version -notmatch '^10\.') { throw "The runner has .NET SDK $version; this repository needs 10.x (see global.json)." }
+          Write-Host ".NET SDK $version"
+
+      - name: Test, publish and package
+        run: ./build.ps1 -Pack
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: ods-desktop-win-x64
+          path: artifacts/releases/win-x64
+          if-no-files-found: error
+          retention-days: 14
+
+  clean-machine:
+    needs: build
+    runs-on: windows-2025
+    timeout-minutes: 45
+    env:
+      ODS_CI_DATA: ${{ github.workspace }}\ods-ci-data
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+          sparse-checkout: tests
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ods-desktop-win-x64
+          path: release
+
+      # The 1.2 GB bootstrap model is pinned by SHA-256 in the catalog, so a cache hit is safe to reuse.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ env.ODS_CI_DATA }}\models
+          key: ods-model-qwen3.5-2b-q4-aaf42c8b7c3cab2bf3d69c355048d4a0ee9973d48f16c731c0520ee914699223
+
+      - name: Install, prove local AI, uninstall
+        shell: pwsh
+        run: >
+          ./tests/clean-machine.ps1
+          -Setup release/ODSDesktop-win-Setup.exe
+          -DataRoot "$env:ODS_CI_DATA"
+          -ResultPath "$env:ODS_CI_DATA\smoke-result.json"
+
+      - name: Keep the smoke result and logs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: ods-desktop-clean-machine
+          path: |
+            ${{ env.ODS_CI_DATA }}\smoke-result.json
+            ${{ env.ODS_CI_DATA }}\logs
+          if-no-files-found: warn
+          retention-days: 14
