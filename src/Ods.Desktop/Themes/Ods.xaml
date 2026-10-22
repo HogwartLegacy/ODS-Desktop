@@ -1,0 +1,122 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+
+    <!-- ODS brand (extensions/services/dashboard/src/index.css dark theme). -->
+    <Color x:Key="OdsAccentColor">#9D00FF</Color>
+    <Color x:Key="OdsAccentLightColor">#D7A4FF</Color>
+    <SolidColorBrush x:Key="OdsAccentBrush" Color="{StaticResource OdsAccentColor}" />
+    <SolidColorBrush x:Key="OdsAccentLightBrush" Color="{StaticResource OdsAccentLightColor}" />
+    <LinearGradientBrush x:Key="OdsHeroBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Offset="0" Color="#40A855F7" />
+        <GradientStop Offset="0.55" Color="#1A2D143F" />
+        <GradientStop Offset="1" Color="#00121018" />
+    </LinearGradientBrush>
+
+    <FontFamily x:Key="OdsMonoFont">Cascadia Mono, Consolas, Courier New</FontFamily>
+
+    <Style x:Key="PageTitle" TargetType="ui:TextBlock">
+        <Setter Property="FontTypography" Value="Title" />
+        <Setter Property="Margin" Value="0,0,0,2" />
+    </Style>
+
+    <Style x:Key="PageSubtitle" TargetType="ui:TextBlock">
+        <Setter Property="FontTypography" Value="Body" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Margin" Value="0,0,0,20" />
+    </Style>
+
+    <Style x:Key="SectionHeader" TargetType="ui:TextBlock">
+        <Setter Property="FontTypography" Value="BodyStrong" />
+        <Setter Property="Margin" Value="0,24,0,8" />
+    </Style>
+
+    <Style x:Key="Caption" TargetType="ui:TextBlock">
+        <Setter Property="FontTypography" Value="Caption" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="Mono" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource OdsMonoFont}" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <!-- A label/value row inside cards. -->
+    <Style x:Key="FactLabel" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+        <Setter Property="Margin" Value="0,3,16,3" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <Style x:Key="FactValue" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Margin" Value="0,3,0,3" />
+    </Style>
+
+    <!-- Status pill used in the title area and on cards. -->
+    <Style x:Key="StatusPill" TargetType="Border">
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="10,4" />
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style x:Key="Badge" TargetType="Border">
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="6,1" />
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- Read-only text the user can select and copy, with no text-box chrome. -->
+    <Style x:Key="SelectableText" TargetType="TextBox">
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <ScrollViewer x:Name="PART_ContentHost" Focusable="False"
+                                  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- A selectable list rendered as cards; the selection is an accent border. -->
+    <Style x:Key="CardListItem" TargetType="ListBoxItem">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border x:Name="Frame" Margin="0,0,0,6" Padding="14,10" CornerRadius="6" BorderThickness="2"
+                            BorderBrush="Transparent" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Frame" Property="Background" Value="{DynamicResource CardBackgroundFillColorSecondaryBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PageScroller" TargetType="ScrollViewer">
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="Padding" Value="32,24,32,32" />
+    </Style>
+
+</ResourceDictionary>

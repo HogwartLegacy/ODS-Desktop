@@ -1,0 +1,50 @@
+<Page x:Class="Ods.Desktop.Views.Pages.LogsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="Logs"
+      ScrollViewer.CanContentScroll="False">
+
+    <Grid Margin="32,24,32,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <ui:TextBlock Style="{StaticResource PageTitle}" Text="Logs" />
+            <ui:TextBlock Style="{StaticResource PageSubtitle}"
+                          Text="What ODS and the model server are doing. A support bundle collects these logs and system details, never your chats, models or API key." />
+        </StackPanel>
+
+        <WrapPanel Grid.Row="1" Margin="0,0,0,12">
+            <ui:Button Appearance="Primary" Content="Export support bundle…" Margin="0,0,8,0" Command="{Binding ExportCommand}">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="ArrowDownload24" />
+                </ui:Button.Icon>
+            </ui:Button>
+            <ui:Button Content="Copy" Margin="0,0,8,0" Command="{Binding CopyCommand}">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="Copy24" />
+                </ui:Button.Icon>
+            </ui:Button>
+            <ui:Button Content="Open logs folder" Command="{Binding OpenFolderCommand}">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="FolderOpen24" />
+                </ui:Button.Icon>
+            </ui:Button>
+        </WrapPanel>
+
+        <TabControl Grid.Row="2" SelectedIndex="{Binding SelectedTab}">
+            <TabItem Header="ODS">
+                <TextBox x:Name="AppLogBox" Text="{Binding AppLogText, Mode=OneWay}" IsReadOnly="True" FontFamily="{StaticResource OdsMonoFont}" FontSize="12"
+                         TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
+            </TabItem>
+            <TabItem Header="Model server">
+                <TextBox x:Name="ServerLogBox" Text="{Binding ServerLogText, Mode=OneWay}" IsReadOnly="True" FontFamily="{StaticResource OdsMonoFont}" FontSize="12"
+                         TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

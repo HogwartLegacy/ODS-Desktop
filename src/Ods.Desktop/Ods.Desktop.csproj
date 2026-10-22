@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>ODS</AssemblyName>
+    <RootNamespace>Ods.Desktop</RootNamespace>
+    <StartupObject>Ods.Desktop.Program</StartupObject>
+    <ApplicationIcon>$(OdsRoot)extensions\services\dashboard\public\ods.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- WPF-UI's Fluent controls; the experimental-API notice is expected. -->
+    <NoWarn>$(NoWarn);WPF0001</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Markdig" />
+    <PackageReference Include="Velopack" />
+    <PackageReference Include="WPF-UI" />
+    <PackageReference Include="WPF-UI.Tray" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ods.Core\Ods.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Program.Main owns startup (Velopack hooks, single instance), so App.xaml compiles as a page. -->
+  <ItemGroup>
+    <ApplicationDefinition Remove="App.xaml" />
+    <Page Include="App.xaml" />
+  </ItemGroup>
+
+  <!-- ODS brand assets, linked from the dashboard so the desktop app uses the same mark. -->
+  <ItemGroup>
+    <Resource Include="$(OdsRoot)extensions\services\dashboard\public\ods.ico" Link="Assets\ods.ico" />
+    <Resource Include="$(OdsRoot)extensions\services\dashboard\public\ods-icon-192.png" Link="Assets\ods-icon-192.png" />
+  </ItemGroup>
+
+</Project>

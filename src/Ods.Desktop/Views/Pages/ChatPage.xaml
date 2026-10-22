@@ -1,0 +1,170 @@
+<Page x:Class="Ods.Desktop.Views.Pages.ChatPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:controls="clr-namespace:Ods.Desktop.Controls"
+      Title="Chat"
+      ScrollViewer.CanContentScroll="False">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Conversations -->
+        <Border Grid.Column="0" Padding="12,16,12,12" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
+            <DockPanel>
+                <ui:Button DockPanel.Dock="Top" Appearance="Primary" HorizontalAlignment="Stretch" Content="New chat" Command="{Binding NewChatCommand}">
+                    <ui:Button.Icon>
+                        <ui:SymbolIcon Symbol="Add24" />
+                    </ui:Button.Icon>
+                </ui:Button>
+                <ui:TextBlock DockPanel.Dock="Top" Style="{StaticResource Caption}" Margin="4,12,0,6" Text="Chats are saved on this PC only." />
+                <ListBox x:Name="ConversationList" ItemsSource="{Binding Conversations}" SelectedItem="{Binding SelectedConversation}"
+                         Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Margin="2,2,0,2">
+                                    <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding When}" FontSize="11" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                </StackPanel>
+                                <ui:Button Grid.Column="1" Appearance="Transparent" Padding="6" ToolTip="Delete chat" AutomationProperties.Name="Delete chat" VerticalAlignment="Center"
+                                           Command="{Binding DataContext.DeleteConversationCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                           CommandParameter="{Binding}">
+                                    <ui:Button.Icon>
+                                        <ui:SymbolIcon Symbol="Delete24" FontSize="14" />
+                                    </ui:Button.Icon>
+                                </ui:Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Empty state -->
+            <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="640" Margin="24"
+                        Visibility="{Binding IsEmpty, Converter={StaticResource Visible}}">
+                <Image Source="pack://application:,,,/Assets/ods-icon-192.png" Width="72" Height="72" />
+                <ui:TextBlock FontTypography="Subtitle" Text="What can I help with?" HorizontalAlignment="Center" Margin="0,16,0,4" />
+                <ui:TextBlock Style="{StaticResource Caption}" HorizontalAlignment="Center" Text="Everything you type stays on this PC." />
+                <ItemsControl ItemsSource="{Binding Suggestions}" Margin="0,20,0,0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel HorizontalAlignment="Center" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ui:Button Margin="4" MaxWidth="300" HorizontalContentAlignment="Left"
+                                       Command="{Binding DataContext.UseSuggestionCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                       CommandParameter="{Binding}">
+                                <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                            </ui:Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- Transcript -->
+            <ScrollViewer x:Name="Transcript" Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                          Visibility="{Binding IsEmpty, Converter={StaticResource Collapsed}}">
+                <ItemsControl ItemsSource="{Binding Messages}" MaxWidth="880" Margin="24,16,24,8">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,8">
+                                <!-- You -->
+                                <Border HorizontalAlignment="Right" MaxWidth="640" CornerRadius="12,12,2,12" Padding="14,10"
+                                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                        BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" BorderThickness="1"
+                                        Visibility="{Binding IsUser, Converter={StaticResource Visible}}">
+                                    <TextBox Style="{StaticResource SelectableText}" Text="{Binding Content, Mode=OneWay}" FontSize="14" />
+                                </Border>
+                                <!-- ODS -->
+                                <Grid Visibility="{Binding IsUser, Converter={StaticResource Collapsed}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="pack://application:,,,/Assets/ods-icon-192.png" Width="28" Height="28" VerticalAlignment="Top" Margin="0,2,0,0" />
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding Author}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,4"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                        <ui:ProgressRing Width="16" Height="16" IsIndeterminate="True" HorizontalAlignment="Left" Margin="0,4,0,4">
+                                            <ui:ProgressRing.Style>
+                                                <Style TargetType="ui:ProgressRing" BasedOn="{StaticResource {x:Type ui:ProgressRing}}">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                    <Style.Triggers>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsStreaming}" Value="True" />
+                                                                <Condition Binding="{Binding Content}" Value="" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </MultiDataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ui:ProgressRing.Style>
+                                        </ui:ProgressRing>
+                                        <controls:MarkdownView Markdown="{Binding Content}" FontSize="14" />
+                                        <StackPanel Orientation="Horizontal" Margin="0,2,0,0"
+                                                    Visibility="{Binding IsStreaming, Converter={StaticResource Collapsed}}">
+                                            <ui:Button Appearance="Transparent" Padding="6,2" ToolTip="Copy reply" AutomationProperties.Name="Copy reply" Command="{Binding CopyCommand}">
+                                                <ui:Button.Icon>
+                                                    <ui:SymbolIcon Symbol="Copy24" FontSize="14" />
+                                                </ui:Button.Icon>
+                                            </ui:Button>
+                                            <TextBlock Text="{Binding Stats}" FontSize="11" VerticalAlignment="Center" Margin="6,0,0,0"
+                                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Composer -->
+            <StackPanel Grid.Row="1" MaxWidth="880" Margin="24,4,24,16">
+                <ui:InfoBar Severity="Warning" IsClosable="False" Margin="0,0,0,8"
+                            IsOpen="{Binding Shell.IsReady, Converter={StaticResource Not}}"
+                            Title="The model is not running" Message="{Binding Shell.StatusTitle}" />
+                <Border CornerRadius="8" Padding="6" Background="{DynamicResource ControlFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" BorderThickness="1">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Bottom">
+                            <ui:Button Appearance="Primary" ToolTip="Send (Enter)" AutomationProperties.Name="Send" Command="{Binding SendCommand}"
+                                       Visibility="{Binding IsGenerating, Converter={StaticResource Collapsed}}">
+                                <ui:Button.Icon>
+                                    <ui:SymbolIcon Symbol="Send24" />
+                                </ui:Button.Icon>
+                            </ui:Button>
+                            <ui:Button ToolTip="Stop" AutomationProperties.Name="Stop generating" Command="{Binding StopCommand}" Visibility="{Binding IsGenerating, Converter={StaticResource Visible}}">
+                                <ui:Button.Icon>
+                                    <ui:SymbolIcon Symbol="Stop24" />
+                                </ui:Button.Icon>
+                            </ui:Button>
+                        </StackPanel>
+                        <ui:TextBox x:Name="InputBox" AutomationProperties.Name="Message" Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap"
+                                    MaxHeight="200" VerticalScrollBarVisibility="Auto" BorderThickness="0" Background="Transparent"
+                                    PlaceholderText="Message ODS (Enter to send, Shift+Enter for a new line)" PreviewKeyDown="OnInputKeyDown" />
+                    </DockPanel>
+                </Border>
+                <ui:TextBlock Style="{StaticResource Caption}" Margin="4,6,0,0" Text="{Binding Shell.StatusDetail}" TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

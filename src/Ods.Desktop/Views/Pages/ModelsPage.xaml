@@ -1,0 +1,126 @@
+<Page x:Class="Ods.Desktop.Views.Pages.ModelsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="Models"
+      ScrollViewer.CanContentScroll="False">
+
+    <Page.Resources>
+        <DataTemplate x:Key="ModelTemplate">
+            <ui:Card Margin="0,0,0,8" Padding="18,14">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,16,0">
+                        <WrapPanel>
+                            <ui:TextBlock FontTypography="BodyStrong" Text="{Binding Name}" Margin="0,0,10,0" />
+                            <Border Style="{StaticResource Badge}" Margin="0,0,6,0" Background="{DynamicResource AccentFillColorDefaultBrush}"
+                                    Visibility="{Binding IsActive, Converter={StaticResource Visible}}">
+                                <TextBlock Text="In use" FontSize="11" Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+                            </Border>
+                            <Border Style="{StaticResource Badge}" Margin="0,0,6,0" Visibility="{Binding IsRecommended, Converter={StaticResource Visible}}">
+                                <TextBlock Text="Recommended" FontSize="11" />
+                            </Border>
+                            <Border Style="{StaticResource Badge}" Margin="0,0,6,0" Visibility="{Binding IsLocalFile, Converter={StaticResource Visible}}">
+                                <TextBlock Text="Your file" FontSize="11" />
+                            </Border>
+                            <Border Style="{StaticResource Badge}">
+                                <TextBlock FontSize="11">
+                                    <Run Text="{Binding Specialty, Mode=OneWay}" />
+                                    <Run Text="·" />
+                                    <Run Text="{Binding SizeText, Mode=OneWay}" />
+                                </TextBlock>
+                            </Border>
+                        </WrapPanel>
+                        <ui:TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0" Text="{Binding FitText}" />
+                        <ui:TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0" MaxHeight="36" TextTrimming="CharacterEllipsis"
+                                      Text="{Binding Description}" ToolTip="{Binding Description}" />
+                        <StackPanel Margin="0,8,0,0" Visibility="{Binding IsDownloading, Converter={StaticResource Visible}}">
+                            <ProgressBar Height="4" Maximum="100" Value="{Binding Progress}" />
+                            <ui:TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0" Text="{Binding ProgressText}" />
+                        </StackPanel>
+                        <ui:TextBlock Style="{StaticResource Caption}" Margin="0,6,0,0" Text="{Binding ProgressText}"
+                                      Visibility="{Binding IsDownloading, Converter={StaticResource Collapsed}}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- Installed -->
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding IsInstalled, Converter={StaticResource Visible}}">
+                            <ComboBox ItemsSource="{Binding ContextOptions}" SelectedItem="{Binding SelectedContext}" MinWidth="110" Margin="0,0,8,0" ToolTip="Context window (tokens)">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <Run Text="{Binding Mode=OneWay}" />
+                                            <Run Text="tokens" />
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <ui:Button Appearance="Primary" Content="{Binding UseLabel}" Margin="0,0,8,0" Command="{Binding UseCommand}" />
+                            <ui:Button Appearance="Transparent" ToolTip="Show in folder" AutomationProperties.Name="Show in folder" Command="{Binding ShowInFolderCommand}">
+                                <ui:Button.Icon>
+                                    <ui:SymbolIcon Symbol="FolderOpen24" />
+                                </ui:Button.Icon>
+                            </ui:Button>
+                            <ui:Button Appearance="Transparent" ToolTip="Delete" AutomationProperties.Name="Delete model" Command="{Binding DeleteCommand}">
+                                <ui:Button.Icon>
+                                    <ui:SymbolIcon Symbol="Delete24" />
+                                </ui:Button.Icon>
+                            </ui:Button>
+                        </StackPanel>
+                        <!-- Downloadable -->
+                        <ui:Button Content="Download" Command="{Binding DownloadCommand}" Visibility="{Binding CanDownload, Converter={StaticResource Visible}}">
+                            <ui:Button.Icon>
+                                <ui:SymbolIcon Symbol="ArrowDownload24" />
+                            </ui:Button.Icon>
+                        </ui:Button>
+                        <ui:Button Content="Pause" Command="{Binding CancelDownloadCommand}" Visibility="{Binding IsDownloading, Converter={StaticResource Visible}}" />
+                    </StackPanel>
+                </Grid>
+            </ui:Card>
+        </DataTemplate>
+    </Page.Resources>
+
+    <ScrollViewer Style="{StaticResource PageScroller}">
+        <StackPanel MaxWidth="1100">
+            <ui:TextBlock Style="{StaticResource PageTitle}" Text="Models" />
+            <ui:TextBlock Style="{StaticResource PageSubtitle}"
+                          Text="Models from the curated ODS catalog, checked for fit on this PC with the same policy as the ODS installers. Downloads are verified against pinned SHA-256 checksums." />
+
+            <ui:CardControl Header="Models folder" Margin="0,0,0,4">
+                <ui:CardControl.Icon>
+                    <ui:SymbolIcon Symbol="Folder24" />
+                </ui:CardControl.Icon>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Margin="0,0,12,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding ModelsFolder}" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis" MaxWidth="420" />
+                        <ui:TextBlock Style="{StaticResource Caption}" HorizontalAlignment="Right" Text="{Binding FreeSpace}" />
+                    </StackPanel>
+                    <ui:Button Content="Change…" Margin="0,0,8,0" Command="{Binding ChangeFolderCommand}" />
+                    <ui:Button Content="Open" Appearance="Transparent" Command="{Binding OpenFolderCommand}" />
+                </StackPanel>
+            </ui:CardControl>
+
+            <StackPanel Visibility="{Binding Recommended, Converter={StaticResource VisibleIfSet}}">
+                <ui:TextBlock Style="{StaticResource SectionHeader}" Text="Recommended for this PC" />
+                <ContentControl Content="{Binding Recommended}" ContentTemplate="{StaticResource ModelTemplate}" />
+                <Expander Header="Why this model?" Margin="0,0,0,4">
+                    <ui:TextBlock Style="{StaticResource Caption}" Margin="0,6,0,0" Text="{Binding RecommendationReason}" />
+                </Expander>
+            </StackPanel>
+
+            <ui:TextBlock Style="{StaticResource SectionHeader}" Text="On this PC" />
+            <ui:TextBlock Style="{StaticResource Caption}" Margin="0,0,0,8" Text="No models downloaded yet."
+                          Visibility="{Binding Installed.Count, Converter={StaticResource WhenEquals}, ConverterParameter=0}" />
+            <ItemsControl ItemsSource="{Binding Installed}" ItemTemplate="{StaticResource ModelTemplate}" />
+
+            <DockPanel Margin="0,24,0,8">
+                <ui:ToggleSwitch DockPanel.Dock="Right" Content="Show models that do not fit" IsChecked="{Binding ShowAll}" />
+                <ui:TextBlock FontTypography="BodyStrong" Text="Available to download" VerticalAlignment="Center" />
+            </DockPanel>
+            <ItemsControl ItemsSource="{Binding Available}" ItemTemplate="{StaticResource ModelTemplate}" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

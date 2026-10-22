@@ -1,0 +1,24 @@
+<Application x:Class="Ods.Desktop.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:conv="clr-namespace:Ods.Desktop.Converters"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:ThemesDictionary Theme="Dark" />
+                <ui:ControlsDictionary />
+                <ResourceDictionary Source="Themes/Ods.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <conv:BoolToVisibilityConverter x:Key="Visible" />
+            <conv:BoolToVisibilityConverter x:Key="Collapsed" Invert="True" />
+            <conv:NullToVisibilityConverter x:Key="VisibleIfSet" />
+            <conv:NullToVisibilityConverter x:Key="VisibleIfNull" Invert="True" />
+            <conv:InverseBoolConverter x:Key="Not" />
+            <conv:EqualsToVisibilityConverter x:Key="WhenEquals" />
+            <conv:HasValueConverter x:Key="HasValue" />
+            <conv:RecoveryActionVisibilityConverter x:Key="WhenAction" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
