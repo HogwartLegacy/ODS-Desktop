@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>Ods.Core</RootNamespace>
+    <!-- Source-generated P/Invoke and the DXGI vtable calls need unsafe code. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Ods.Core.Tests" />
+  </ItemGroup>
+
+  <!--
+    Data the app ships with, linked from the repository so there is one source
+    of truth: ODS's curated model catalog and the desktop llama.cpp pins.
+  -->
+  <ItemGroup>
+    <Content Include="$(OdsRoot)config\model-library.json" Link="data\model-library.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(OdsRoot)config\extensions-catalog.json" Link="data\extensions-catalog.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(DesktopRoot)runtime-pins.json" Link="data\runtime-pins.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(DesktopRoot)windows-native-services.json" Link="data\windows-native-services.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

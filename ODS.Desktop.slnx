@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Ods.Core/Ods.Core.csproj" />
+    <Project Path="src/Ods.Cli/Ods.Cli.csproj" />
+    <Project Path="src/Ods.Desktop/Ods.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Ods.Core.Tests/Ods.Core.Tests.csproj" />
+  </Folder>
+</Solution>

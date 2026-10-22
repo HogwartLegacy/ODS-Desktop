@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "description": "llama.cpp Windows builds the native ODS desktop app may install. Every archive is pinned to GitHub's per-asset SHA-256 and byte size for the official ggml-org/llama.cpp release. win-vulkan-x64 must equal config/backends/amd.json runtime.llama_server.windows and win-cuda-13.4-arm64 must equal config/backends/nvidia.json runtime.llama_server.windows_arm64; Ods.Core.Tests enforces both. required_files are checked after extraction; pin.json then records a SHA-256 for every extracted file and is re-verified before every launch.",
+  "flavors": [
+    {
+      "flavor": "win-cuda-13.1-x64",
+      "backend": "cuda",
+      "architecture": "x64",
+      "release_tag": "b9014",
+      "min_driver_version": "580.88",
+      "min_compute_capability": "7.5",
+      "archives": [
+        { "asset": "llama-b9014-bin-win-cuda-13.1-x64.zip", "sha256": "1d004ee3bb162b3e0b4e45eae4fae8785c0dbb9677aca6a627dc70de6f60be68", "size": 134904998 },
+        { "asset": "cudart-llama-bin-win-cuda-13.1-x64.zip", "sha256": "f96935e7e385e3b2d0189239077c10fe8fd7e95690fea4afec455b1b6c7e3f18", "size": 402582216 }
+      ],
+      "required_files": [
+        "llama-server.exe", "llama.dll", "llama-common.dll", "mtmd.dll", "ggml.dll", "ggml-base.dll",
+        "ggml-cpu-x64.dll", "ggml-cuda.dll", "libomp140.x86_64.dll", "cudart64_13.dll", "cublas64_13.dll", "cublasLt64_13.dll"
+      ]
+    },
+    {
+      "flavor": "win-cuda-12.4-x64",
+      "backend": "cuda",
+      "architecture": "x64",
+      "release_tag": "b9014",
+      "min_driver_version": "551.61",
+      "min_compute_capability": "5.0",
+      "max_compute_capability": "9.0",
+      "archives": [
+        { "asset": "llama-b9014-bin-win-cuda-12.4-x64.zip", "sha256": "bef10c5cca99c6c53a4f996fc60763237f68c3ba4f5b0de6a12c870d30c70441", "size": 214361213 },
+        { "asset": "cudart-llama-bin-win-cuda-12.4-x64.zip", "sha256": "8c79a9b226de4b3cacfd1f83d24f962d0773be79f1e7b75c6af4ded7e32ae1d6", "size": 391443627 }
+      ],
+      "required_files": [
+        "llama-server.exe", "llama.dll", "llama-common.dll", "mtmd.dll", "ggml.dll", "ggml-base.dll",
+        "ggml-cpu-x64.dll", "ggml-cuda.dll", "libomp140.x86_64.dll", "cudart64_12.dll", "cublas64_12.dll", "cublasLt64_12.dll"
+      ]
+    },
+    {
+      "flavor": "win-vulkan-x64",
+      "backend": "vulkan",
+      "architecture": "x64",
+      "release_tag": "b9014",
+      "archives": [
+        { "asset": "llama-b9014-bin-win-vulkan-x64.zip", "sha256": "6cd4bc7a44256e674458b0c5ea2ae3461dca29ee87876c8d410ecc78652a3b0f", "size": 33541404 }
+      ],
+      "required_files": [
+        "llama-server.exe", "llama.dll", "llama-common.dll", "mtmd.dll", "ggml.dll", "ggml-base.dll",
+        "ggml-cpu-x64.dll", "ggml-vulkan.dll", "libomp140.x86_64.dll"
+      ]
+    },
+    {
+      "flavor": "win-cpu-x64",
+      "backend": "cpu",
+      "architecture": "x64",
+      "release_tag": "b9014",
+      "archives": [
+        { "asset": "llama-b9014-bin-win-cpu-x64.zip", "sha256": "3503cc30154266ac0fbedd38e39e35a313a13412415738ae8f9e23e4fcb44da2", "size": 15917797 }
+      ],
+      "required_files": [
+        "llama-server.exe", "llama.dll", "llama-common.dll", "mtmd.dll", "ggml.dll", "ggml-base.dll",
+        "ggml-cpu-x64.dll", "libomp140.x86_64.dll"
+      ]
+    },
+    {
+      "flavor": "win-cpu-arm64",
+      "backend": "cpu",
+      "architecture": "arm64",
+      "release_tag": "b9014",
+      "archives": [
+        { "asset": "llama-b9014-bin-win-cpu-arm64.zip", "sha256": "e4c4efea06adf317ceb3f09f2f42b99580ccd6cf37eb8b31c474d4817e57a502", "size": 9638582 }
+      ],
+      "required_files": [
+        "llama-server.exe", "llama.dll", "llama-common.dll", "mtmd.dll", "ggml.dll", "ggml-base.dll",
+        "ggml-cpu.dll", "libomp140.aarch64.dll"
+      ]
+    },
+    {
+      "flavor": "win-cuda-13.4-arm64",
+      "backend": "cuda",
+      "architecture": "arm64",
+      "release_tag": "b11429",
+      "min_driver_version": "616.41",
+      "min_compute_capability": "12.1",
+      "archives": [
+        { "asset": "llama-b11429-bin-win-cuda-13.4-arm64.zip", "sha256": "930cff325a0eb15e1232d5b5275b818c76c9c32a398788f18bb05273d3110c72", "size": 145270624 },
+        { "asset": "cudart-llama-bin-win-cuda-13.4-arm64.zip", "sha256": "642dcde8805b3e3165ca710a5443b3b4044b27d96bd3ee3132473988c9bcb774", "size": 153262407 }
+      ],
+      "required_files": [
+        "llama-server.exe", "llama-server-impl.dll", "llama-common.dll", "llama.dll", "mtmd.dll", "ggml.dll",
+        "ggml-base.dll", "ggml-cpu.dll", "ggml-cuda.dll", "libomp.dll", "cudart64_13.dll", "cublas64_13.dll", "cublasLt64_13.dll"
+      ]
+    }
+  ]
+}

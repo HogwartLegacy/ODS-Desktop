@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "description": "How each ODS core service runs on native Windows, without Docker or WSL. The desktop app's Extensions page and docs/WINDOWS-NATIVE-MIGRATION-PLAN.md both read this list. status: built-in (ships today), next (the next milestone), planned, needs-design (needs a maintainer decision), external (use the vendor's Windows app), not-planned.",
+  "services": [
+    { "id": "llama-server", "status": "built-in", "approach": "Official ggml-org llama.cpp Windows builds (CUDA 13.1/12.4, Vulkan, CPU, ARM64), pinned by SHA-256, verified before every launch and supervised in a Windows job object." },
+    { "id": "dashboard", "status": "built-in", "approach": "This desktop app is the control center: setup, status, models, logs, diagnostics and settings." },
+    { "id": "dashboard-api", "status": "built-in", "approach": "Replaced by the in-process ODS engine, which ports model_selection.py and model_memory.py exactly (golden-tested). The FastAPI service can follow on an embedded Python for API parity." },
+    { "id": "open-webui", "status": "next", "approach": "Optional add-on: Open WebUI in an embedded, pinned Python environment (python-build-standalone + uv lock), pointed at the native llama-server." },
+    { "id": "whisper", "status": "next", "approach": "whisper.cpp server from its official Windows builds (CUDA, Vulkan, CPU), with the same pin, verify and supervise flow as llama.cpp." },
+    { "id": "embeddings", "status": "planned", "approach": "A second llama-server in --embedding mode with a pinned GGUF embedding model; TEI has no Windows build." },
+    { "id": "tts", "status": "planned", "approach": "Kokoro through ONNX Runtime with DirectML (works on NVIDIA, AMD and Intel GPUs), behind the same OpenAI-compatible speech API." },
+    { "id": "qdrant", "status": "planned", "approach": "The official qdrant.exe Windows release, pinned, with storage under the ODS data folder." },
+    { "id": "comfyui", "status": "planned", "approach": "ComfyUI's official Windows portable runtime (embedded Python with CUDA), installed on demand like a model." },
+    { "id": "n8n", "status": "planned", "approach": "n8n on a bundled, pinned Node.js runtime; ODS starter workflows from config/n8n imported on first run." },
+    { "id": "litellm", "status": "planned", "approach": "LiteLLM in the embedded Python environment for cloud and hybrid routing (config/litellm)." },
+    { "id": "searxng", "status": "planned", "approach": "SearXNG in the embedded Python environment, served by waitress instead of uWSGI." },
+    { "id": "perplexica", "status": "planned", "approach": "Perplexica on the bundled Node.js runtime, wired to SearXNG and the local model." },
+    { "id": "opencode", "status": "planned", "approach": "The official opencode Windows binary, which installers/windows already pins." },
+    { "id": "privacy-shield", "status": "planned", "approach": "Python service in the embedded environment." },
+    { "id": "token-spy", "status": "planned", "approach": "Python service in the embedded environment." },
+    { "id": "ape", "status": "planned", "approach": "Python service in the embedded environment, policy from config/ape." },
+    { "id": "pixel-agent", "status": "needs-design", "approach": "Portal/Pixel needs a Windows host runtime in place of its systemd units and a sandbox in place of its Docker sandbox. Options: AppContainer + job objects, Windows Sandbox, or an optional WSL backend. Needs a maintainer decision." },
+    { "id": "hermes", "status": "needs-design", "approach": "Depends on the same agent sandbox decision as Portal; the Windows legacy installer ran it in Docker." },
+    { "id": "tailscale", "status": "external", "approach": "Use the official Tailscale for Windows app; ODS can detect it to offer remote access." },
+    { "id": "langfuse", "status": "not-planned", "approach": "A server-side observability stack (Postgres and ClickHouse); out of scope for a desktop install." },
+    { "id": "ods-proxy", "status": "not-planned", "approach": "LAN and mDNS entry for headless servers; the desktop app binds to localhost only." }
+  ]
+}
